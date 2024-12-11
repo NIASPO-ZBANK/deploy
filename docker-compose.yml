@@ -6,11 +6,11 @@ services:
     ports:
       - "8080:80"
     depends_on:
-       zbank1:
+      zbank1:
         condition: service_started
-       zbank2:
+      zbank2:
         condition: service_started
-       zbank3:
+      zbank3:
         condition: service_started
     restart: unless-stopped
 
@@ -47,7 +47,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-
   zbank-postgres:
     image: postgres:latest
     environment:
@@ -63,4 +62,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    depends_on:
+      nginx-balancer:
+        condition: service_started
     restart: unless-stopped
